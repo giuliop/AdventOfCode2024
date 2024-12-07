@@ -1,0 +1,21 @@
+41
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan receive]:
+main.answer2()
+	/Users/giulio/dev/advent/2024/day6/main.go:200 +0x268
+main.printAndTest(0x2)
+	/Users/giulio/dev/advent/2024/day6/main.go:219 +0x40
+main.main()
+	/Users/giulio/dev/advent/2024/day6/main.go:233 +0x98
+
+goroutine 4 [semacquire]:
+sync.runtime_Semacquire(0x0?)
+	/usr/local/go/src/runtime/sema.go:62 +0x2c
+sync.(*WaitGroup).Wait(0x1400000e100)
+	/usr/local/go/src/sync/waitgroup.go:116 +0x74
+main.answer2.func1()
+	/Users/giulio/dev/advent/2024/day6/main.go:195 +0x28
+created by main.answer2 in goroutine 1
+	/Users/giulio/dev/advent/2024/day6/main.go:194 +0x244
+exit status 2
