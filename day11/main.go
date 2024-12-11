@@ -110,14 +110,8 @@ func answer1() int {
 // Now blink 75 times. How many stones are there now?
 //
 // We cannot run the naive solution for 75 rounds, it would be too slow.
-// We will use two compression techniques:
-// 1. Digit decomposition
-//    We will compute for each digit the number of rounds it takes to decompose
-//    back to single digits, so we can jump rounds when we have digits
-// 2. Same number multiplier
-//    If we have the same number multiple times, we can multiply the result
-//    by the number of times we have it
-// 3. If we have an even digit number with no zeros, we can split it in its digits
+// If we have the same number/rounds pair  multiple times, we can multiply the result
+// by the number of times we have it
 
 type DigitInfo struct {
 	value      int
@@ -127,27 +121,6 @@ type DigitInfo struct {
 
 // WorkInProgress stores DigitInfos using value,rounds as key
 type WorkInProgress map[[2]int]DigitInfo
-
-// decompose takes a number and a list of rules and returns a list of digits
-// the number decomposes to and the number of rounds for each digit to decompose to
-func decompose(number int, rules []Rule) []DigitInfo {
-	numbers := []DigitInfo{{value: number}}
-	digits := make([]DigitInfo, 0)
-	for len(numbers) > 0 {
-		n := numbers[len(numbers)-1]
-		numbers = numbers[:len(numbers)-1]
-		newNums := applyRules(n.value, rules)
-		for _, n2 := range newNums {
-			d := DigitInfo{value: n2, rounds: n.rounds + 1}
-			if n2 > 9 {
-				numbers = append(numbers, d)
-			} else {
-				digits = append(digits, d)
-			}
-		}
-	}
-	return digits
-}
 
 func (wip WorkInProgress) pop() DigitInfo {
 	var key [2]int
@@ -172,12 +145,8 @@ func (wip WorkInProgress) add(d DigitInfo) {
 func answer2() int {
 	rules := []Rule{rule1, rule2, rule3}
 	stones := readInput()
-	digitDecompositions := make(map[int][]DigitInfo)
 	res := 0
 	rounds := 75
-	for i := range 10 {
-		digitDecompositions[i] = decompose(i, rules)
-	}
 	wip := make(WorkInProgress)
 	for _, s := range stones {
 		wip[[2]int{s, 0}] = DigitInfo{s, 0, 1}
@@ -188,31 +157,9 @@ func answer2() int {
 			res += dInfo.multiplier
 			continue
 		}
-		appliedDecomposition := false
-		if dInfo.value < 10 {
-			newStones := make([]DigitInfo, 0)
-			canApplyDecomposition := true
-			for _, dec := range digitDecompositions[dInfo.value] {
-				if dec.rounds+dInfo.rounds > rounds {
-					canApplyDecomposition = false
-					break
-				} else {
-					newStones = append(newStones,
-						DigitInfo{dec.value, dInfo.rounds + dec.rounds, 1})
-				}
-			}
-			if canApplyDecomposition {
-				for _, d := range newStones {
-					wip.add(DigitInfo{d.value, d.rounds, dInfo.multiplier})
-				}
-				appliedDecomposition = true
-			}
-		}
-		if !appliedDecomposition {
-			nums := applyRules(dInfo.value, rules)
-			for _, n := range nums {
-				wip.add(DigitInfo{n, dInfo.rounds + 1, dInfo.multiplier})
-			}
+		nums := applyRules(dInfo.value, rules)
+		for _, n := range nums {
+			wip.add(DigitInfo{n, dInfo.rounds + 1, dInfo.multiplier})
 		}
 	}
 	return res
@@ -221,8 +168,8 @@ func answer2() int {
 // -----------------------------------------------------------------------
 
 var correctAnswers = map[int]int{
-	//1: 199982,
-	//2: 0,
+	1: 199982,
+	2: 237149922829154,
 }
 
 var answerFuncs = map[int]func() int{
