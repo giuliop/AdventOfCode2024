@@ -1,0 +1,34 @@
+code 029A
+                       0           2                   9                 A
+Num :          <       A       ^   A     >        ^^   A        vvv      A
+               1
+Dir1:   v <<   A >>  ^ A   <   A > A  v  A   <  ^ AA > A   < v  AAA >  ^ A
+               4       4       2   2     2        31   2        311      3 = 28
+Dir2: <vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A
+              10       8          12                  20                18 = 68
+Dir3: <v<A >A >^A <v<A >>^A A vA A <^A >A
+         4+ 2+  3+   4+   4+1+ 2+1+  3+ 2 = 26
+
+
+Dir1 to Num
+A< 4: <v<A
+Av 3: v<A
+v< 2: <A
+<< 1: A
+<A 4: >>^A
+<v 2: >A
+A> 2: vA
+>^ 3: <^A
+^A 2: >A
+
+Dir2 to Dir1
+A< 10
+
+Dir3 to Dir2
+A< 10: Av (3) + v< (2) + << (1) + <A (4)
+
+
+Dir4 to Dir
+A< ?
+
+Dir4 to Dir3
